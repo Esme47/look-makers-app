@@ -1,0 +1,53 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Poppins:wght@400;500&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #f4ede4;
+  color: #3a2f2a;
+  font-family: "Poppins", sans-serif;
+}
+
+.font-voice {
+  font-family: "Playfair Display", serif;
+}
+
+.lm-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  border: 1px solid #b8934a;
+  color: #b8934a;
+  background: transparent;
+}
+
+.lm-pill.selected {
+  background: #b8934a;
+  color: #fff;
+}
+
+.lm-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid rgba(184, 147, 74, 0.25);
+}
+
+.lm-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 999px;
+  background: #b8934a;
+  color: #fff;
+  font-weight: 500;
+  text-align: center;
+}
+
+.lm-btn:disabled {
+  opacity: 0.5;
+}

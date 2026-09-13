@@ -1,0 +1,166 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
+
+export type Servicio = {
+  id: string;
+  nombre: string;
+  categoria: "pestanas" | "cejas";
+  duracion_min: number;
+  precio: number;
+  descripcion: string | null;
+};
+
+export async function getServicios(supabase: SupabaseClient) {
+  const { data, error } = await supabase
+    .from("servicios")
+    .select("*")
+    .order("categoria");
+  if (error) throw error;
+  return data as Servicio[];
+}
+
+export async function getServicio(supabase: SupabaseClient, id: string) {
+  const { data, error } = await supabase
+    .from("servicios")
+    .select("*")
+    .eq("id", id)
+    .single();
+  if (error) return null;
+  return data as Servicio;
+}
+
+// Por ahora Look Makers tiene una sola profesional activa; si más adelante
+// hay varias, aquí se filtraría por el servicio que cada una realiza.
+export async function getProfesionalPrincipal(supabase: SupabaseClient) {
+  const { data, error } = await supabase
+    .from("profesionales")
+    .select("*")
+    .limit(1)
+    .single();
+  if (error) return null;
+  return data as { id: string; nombre: string };
+}
+
+function sumarMinutos(hora: string, minutos: number) {
+  const [h, m] = hora.split(":").map(Number);
+  const total = h * 60 + m + minutos;
+  const hh = Math.floor(total / 60) % 24;
+  const mm = total % 60;
+  return `${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
+}
+
+function generarFranjas(horaInicio: string, horaFin: string, duracionMin: number) {
+  const franjas: string[] = [];
+  let actual = horaInicio.slice(0, 5);
+  while (actual < horaFin.slice(0, 5)) {
+    const siguiente = sumarMinutos(actual, duracionMin);
+    if (siguiente > horaFin.slice(0, 5)) break;
+    franjas.push(actual);
+    actual = siguiente;
+  }
+  return franjas;
+}
+
+// Calcula las horas libres de un profesional para una fecha y un servicio,
+// cruzando su horario habitual (disponibilidad) con las citas ya reservadas.
+export async function getHorasDisponibles(
+  supabase: SupabaseClient,
+  profesionalId: string,
+  fechaISO: string,
+  duracionMin: number
+) {
+  const diaSemana = new Date(`${fechaISO}T00:00:00`).getDay();
+
+  const { data: rangos, error: errRangos } = await supabase
+    .from("disponibilidad")
+    .select("hora_inicio, hora_fin")
+    .eq("profesional_id", profesionalId)
+    .eq("dia_semana", diaSemana)
+    .eq("bloqueado", false);
+  if (errRangos) throw errRangos;
+  if (!rangos || rangos.length === 0) return [];
+
+  const { data: ocupadas, error: errOcupadas } = await supabase
+    .from("horarios_ocupados")
+    .select("hora_inicio")
+    .eq("profesional_id", profesionalId)
+    .eq("fecha", fechaISO);
+  if (errOcupadas) throw errOcupadas;
+
+  const horasOcupadas = new Set(
+    (ocupadas ?? []).map((c) => c.hora_inicio.slice(0, 5))
+  );
+
+  const todasLasFranjas = rangos.flatMap((r) =>
+    generarFranjas(r.hora_inicio, r.hora_fin, duracionMin)
+  );
+
+  return todasLasFranjas.filter((h) => !horasOcupadas.has(h));
+}
+
+export async function crearCita(
+  supabase: SupabaseClient,
+  params: {
+    usuarioId: string;
+    servicioId: string;
+    profesionalId: string;
+    fechaISO: string;
+    horaInicio: string;
+    duracionMin: number;
+  }
+) {
+  const horaFin = sumarMinutos(params.horaInicio, params.duracionMin);
+  const { error } = await supabase.from("citas").insert({
+    usuario_id: params.usuarioId,
+    servicio_id: params.servicioId,
+    profesional_id: params.profesionalId,
+    fecha: params.fechaISO,
+    hora_inicio: params.horaInicio,
+    hora_fin: horaFin,
+    estado: "pendiente",
+  });
+  return { error };
+}
+
+export async function getProximaCita(supabase: SupabaseClient, usuarioId: string) {
+  const hoy = new Date().toISOString().slice(0, 10);
+  const { data, error } = await supabase
+    .from("citas")
+    .select("id, fecha, hora_inicio, estado, servicios(nombre)")
+    .eq("usuario_id", usuarioId)
+    .gte("fecha", hoy)
+    .in("estado", ["pendiente", "confirmada"])
+    .order("fecha", { ascending: true })
+    .order("hora_inicio", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+  if (error) return null;
+  return data;
+}
+
+export async function getHistorialCitas(supabase: SupabaseClient, usuarioId: string) {
+  const { data, error } = await supabase
+    .from("citas")
+    .select("id, fecha, estado, servicios(nombre)")
+    .eq("usuario_id", usuarioId)
+    .order("fecha", { ascending: false })
+    .limit(10);
+  if (error) return [];
+  return data;
+}
+
+// Próximos N días para mostrar como selector, con su fecha ISO (YYYY-MM-DD)
+// y una etiqueta corta en español, ej. "jue 18".
+export function proximosDias(cantidad = 7) {
+  const dias = [];
+  const hoy = new Date();
+  for (let i = 1; i <= cantidad; i++) {
+    const fecha = new Date(hoy);
+    fecha.setDate(hoy.getDate() + i);
+    const iso = fecha.toISOString().slice(0, 10);
+    const etiqueta = fecha
+      .toLocaleDateString("es-CO", { weekday: "short", day: "numeric" })
+      .replace(".", "");
+    dias.push({ iso, etiqueta });
+  }
+  return dias;
+}
