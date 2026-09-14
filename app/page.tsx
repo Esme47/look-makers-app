@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getProximaCita } from "@/lib/queries";
+import { EYE_DATA_URI, LASHISTA_DATA_URI } from "@/lib/brandImages";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +15,24 @@ export default async function Home() {
 
   return (
     <div>
-      <p className="font-voice text-xl mb-1">
+      <div className="relative rounded-2xl overflow-hidden mb-4">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={EYE_DATA_URI}
+          alt="Look Makers, tu mirada, nuestra pasión"
+          className="w-full h-44 object-cover"
+        />
+        <div className="absolute -bottom-6 right-4 w-14 h-14 rounded-full border-2 border-white overflow-hidden shadow">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={LASHISTA_DATA_URI}
+            alt="Tu lashista en Look Makers"
+            className="w-full h-full object-cover"
+          />
+        </div>
+      </div>
+
+      <p className="font-voice text-xl mb-1 mt-8">
         {user ? `Hola, ${user.email?.split("@")[0]}` : "Hola"}
       </p>
       <p className="text-sm text-lmMuted mb-4">

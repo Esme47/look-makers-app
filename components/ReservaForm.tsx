@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { getHorasDisponibles, crearCita, proximosDias } from "@/lib/queries";
 import type { Servicio } from "@/lib/queries";
+import { LASHISTA_DATA_URI } from "@/lib/brandImages";
 
 type Profesional = { id: string; nombre: string };
 
@@ -110,9 +111,17 @@ export default function ReservaForm({
   return (
     <div>
       <p className="font-voice text-lg mb-1">Elige fecha y hora</p>
-      <p className="text-xs text-lmMuted mb-4">
-        {servicio.nombre} · {servicio.duracion_min} min con {profesional.nombre}
-      </p>
+      <div className="flex items-center gap-2 mb-4">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={LASHISTA_DATA_URI}
+          alt={profesional.nombre}
+          className="w-8 h-8 rounded-full object-cover"
+        />
+        <p className="text-xs text-lmMuted">
+          {servicio.nombre} · {servicio.duracion_min} min con {profesional.nombre}
+        </p>
+      </div>
 
       <div className="flex gap-2 mb-4 overflow-x-auto">
         {dias.map((d) => (

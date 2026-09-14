@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { LOGO_DATA_URI } from "@/lib/brandImages";
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
@@ -49,8 +50,14 @@ export default function LoginForm() {
 
   return (
     <div className="pt-6">
-      <p className="font-voice text-lg mb-1">Inicia sesión</p>
-      <p className="text-xs text-lmMuted mb-4">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={LOGO_DATA_URI}
+        alt="Look Makers"
+        className="w-20 h-20 mx-auto mb-4"
+      />
+      <p className="font-voice text-lg mb-1 text-center">Inicia sesión</p>
+      <p className="text-xs text-lmMuted mb-4 text-center">
         Te enviamos un enlace mágico, sin contraseña.
       </p>
       <form onSubmit={enviarEnlace}>
