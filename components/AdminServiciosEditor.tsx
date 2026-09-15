@@ -16,6 +16,7 @@ function BotonGuardar() {
 function FilaServicio({ servicio }: { servicio: Servicio }) {
   const [state, formAction] = useFormState(updateServicioAction, {
     error: null,
+    ok: false,
   });
 
   return (
