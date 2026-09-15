@@ -1,28 +1,26 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
-import { getProximaCita } from "@/lib/queries";
-import { EYE_DATA_URI, LASHISTA_DATA_URI } from "@/lib/brandImages";
+import { EYE_DATA_URI, LASHISTA_DATA_URI, LOGO_DATA_URI } from "@/lib/brandImages";
 
-export const dynamic = "force-dynamic";
-
-export default async function Home() {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const proximaCita = user ? await getProximaCita(supabase, user.id) : null;
-
+export default function Home() {
   return (
     <div>
-      <div className="relative rounded-2xl overflow-hidden mb-4">
+      <div className="relative rounded-2xl overflow-hidden mb-8">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={EYE_DATA_URI}
           alt="Look Makers, tu mirada, nuestra pasión"
           className="w-full h-44 object-cover"
         />
-        <div className="absolute -bottom-6 right-4 w-14 h-14 rounded-full border-2 border-white overflow-hidden shadow">
+        {/* Logo grande y con fondo propio para que se vea bien sobre cualquier foto */}
+        <div className="absolute -bottom-6 left-4 w-16 h-16 rounded-full bg-white shadow flex items-center justify-center p-1.5">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={LOGO_DATA_URI}
+            alt="Look Makers"
+            className="w-full h-full object-contain"
+          />
+        </div>
+        <div className="absolute -bottom-6 right-4 w-20 h-20 rounded-full border-2 border-white overflow-hidden shadow">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={LASHISTA_DATA_URI}
@@ -32,28 +30,17 @@ export default async function Home() {
         </div>
       </div>
 
-      <p className="font-voice text-xl mb-1 mt-8">
-        {user ? `Hola, ${user.email?.split("@")[0]}` : "Hola"}
-      </p>
+      <p className="font-voice text-xl mb-1 mt-8">Hola</p>
       <p className="text-sm text-lmMuted mb-4">
         Bienvenida de nuevo a Look Makers
       </p>
 
       <div className="lm-card mb-3">
-        <p className="text-xs text-lmMuted mb-1">Tu próxima cita</p>
-        {proximaCita ? (
-          <p className="text-sm font-medium mb-3">
-            {/* @ts-expect-error el join de supabase-js tipa como arreglo */}
-            {proximaCita.servicios?.nombre} · {proximaCita.fecha} ·{" "}
-            {proximaCita.hora_inicio?.slice(0, 5)}
-          </p>
-        ) : (
-          <p className="text-sm font-medium mb-3">
-            {user ? "Aún no tienes citas agendadas" : "Inicia sesión para ver tus citas"}
-          </p>
-        )}
-        <Link href={user ? "/servicios" : "/login"} className="lm-btn block">
-          {proximaCita ? "Ver servicios" : user ? "Agendar cita" : "Iniciar sesión"}
+        <p className="text-sm font-medium mb-3">
+          Agenda tu cita de pestañas o cejas en segundos
+        </p>
+        <Link href="/servicios" className="lm-btn block">
+          Agendar cita
         </Link>
       </div>
 

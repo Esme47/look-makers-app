@@ -19,17 +19,20 @@ function formatoHora12(hora24: string) {
 export default function ReservaForm({
   servicio,
   profesional,
-  usuarioId,
 }: {
   servicio: Servicio;
   profesional: Profesional;
-  usuarioId: string;
 }) {
   const dias = proximosDias(7);
   const [diaSel, setDiaSel] = useState(dias[0].iso);
   const [horas, setHoras] = useState<string[]>([]);
   const [cargandoHoras, setCargandoHoras] = useState(true);
   const [horaSel, setHoraSel] = useState<string | null>(null);
+
+  const [nombre, setNombre] = useState("");
+  const [telefono, setTelefono] = useState("");
+  const [correo, setCorreo] = useState("");
+
   const [confirmado, setConfirmado] = useState(false);
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -59,11 +62,17 @@ export default function ReservaForm({
       setError("Elige una hora disponible");
       return;
     }
+    if (!nombre.trim() || !telefono.trim()) {
+      setError("Escribe tu nombre y tu teléfono para poder confirmarte la cita");
+      return;
+    }
     setError(null);
     setEnviando(true);
     const supabase = createClient();
     const { error: insertError } = await crearCita(supabase, {
-      usuarioId,
+      clienteNombre: nombre.trim(),
+      clienteTelefono: telefono.trim(),
+      clienteCorreo: correo.trim(),
       servicioId: servicio.id,
       profesionalId: profesional.id,
       fechaISO: diaSel,
@@ -72,10 +81,7 @@ export default function ReservaForm({
     });
     setEnviando(false);
     if (insertError) {
-      setError(
-        "Esa hora ya se acaba de ocupar, elige otra por favor."
-      );
-      // refresca la lista de horas disponibles
+      setError("Esa hora ya se acaba de ocupar, elige otra por favor.");
       setDiaSel((d) => d);
       return;
     }
@@ -92,14 +98,15 @@ export default function ReservaForm({
         </div>
         <p className="font-voice text-lg mb-1">Cita confirmada</p>
         <p className="text-xs text-lmMuted mb-6">
-          Te esperamos en Look Makers
+          Te esperamos en Look Makers, {nombre.split(" ")[0]}
         </p>
         <div className="lm-card text-left mb-6">
           <p className="text-sm mb-1">✨ {servicio.nombre}</p>
           <p className="text-sm mb-1">
             📅 {etiquetaDia}, {horaSel && formatoHora12(horaSel)}
           </p>
-          <p className="text-sm">📍 Montería, Córdoba</p>
+          <p className="text-sm mb-1">📍 Montería, Córdoba</p>
+          <p className="text-sm">📞 Te confirmamos al {telefono}</p>
         </div>
         <Link href="/" className="lm-btn block">
           Volver al inicio
@@ -158,6 +165,30 @@ export default function ReservaForm({
           ))}
         </div>
       )}
+
+      <p className="text-xs text-lmMuted mb-2">Tus datos</p>
+      <div className="space-y-2 mb-4">
+        <input
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+          placeholder="Nombre completo"
+          className="w-full rounded-xl border border-lmGold/40 px-4 py-3 text-sm bg-white"
+        />
+        <input
+          value={telefono}
+          onChange={(e) => setTelefono(e.target.value)}
+          placeholder="Teléfono / WhatsApp"
+          type="tel"
+          className="w-full rounded-xl border border-lmGold/40 px-4 py-3 text-sm bg-white"
+        />
+        <input
+          value={correo}
+          onChange={(e) => setCorreo(e.target.value)}
+          placeholder="Correo (opcional)"
+          type="email"
+          className="w-full rounded-xl border border-lmGold/40 px-4 py-3 text-sm bg-white"
+        />
+      </div>
 
       {error && <p className="text-xs text-red-600 mb-3">{error}</p>}
 

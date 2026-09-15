@@ -97,10 +97,13 @@ export async function getHorasDisponibles(
   return todasLasFranjas.filter((h) => !horasOcupadas.has(h));
 }
 
+// Crea una cita de invitada: no requiere cuenta, solo sus datos de contacto.
 export async function crearCita(
   supabase: SupabaseClient,
   params: {
-    usuarioId: string;
+    clienteNombre: string;
+    clienteTelefono: string;
+    clienteCorreo: string;
     servicioId: string;
     profesionalId: string;
     fechaISO: string;
@@ -110,7 +113,10 @@ export async function crearCita(
 ) {
   const horaFin = sumarMinutos(params.horaInicio, params.duracionMin);
   const { error } = await supabase.from("citas").insert({
-    usuario_id: params.usuarioId,
+    usuario_id: null,
+    cliente_nombre: params.clienteNombre,
+    cliente_telefono: params.clienteTelefono,
+    cliente_correo: params.clienteCorreo,
     servicio_id: params.servicioId,
     profesional_id: params.profesionalId,
     fecha: params.fechaISO,
@@ -119,33 +125,6 @@ export async function crearCita(
     estado: "pendiente",
   });
   return { error };
-}
-
-export async function getProximaCita(supabase: SupabaseClient, usuarioId: string) {
-  const hoy = new Date().toISOString().slice(0, 10);
-  const { data, error } = await supabase
-    .from("citas")
-    .select("id, fecha, hora_inicio, estado, servicios(nombre)")
-    .eq("usuario_id", usuarioId)
-    .gte("fecha", hoy)
-    .in("estado", ["pendiente", "confirmada"])
-    .order("fecha", { ascending: true })
-    .order("hora_inicio", { ascending: true })
-    .limit(1)
-    .maybeSingle();
-  if (error) return null;
-  return data;
-}
-
-export async function getHistorialCitas(supabase: SupabaseClient, usuarioId: string) {
-  const { data, error } = await supabase
-    .from("citas")
-    .select("id, fecha, estado, servicios(nombre)")
-    .eq("usuario_id", usuarioId)
-    .order("fecha", { ascending: false })
-    .limit(10);
-  if (error) return [];
-  return data;
 }
 
 // Próximos N días para mostrar como selector, con su fecha ISO (YYYY-MM-DD)
@@ -163,4 +142,36 @@ export function proximosDias(cantidad = 7) {
     dias.push({ iso, etiqueta });
   }
   return dias;
+}
+
+// --- Panel de la administradora (Perfil) ---
+
+export async function adminVerifyPassword(supabase: SupabaseClient, password: string) {
+  const { data, error } = await supabase.rpc("admin_verify_password", {
+    p_password: password,
+  });
+  if (error) return false;
+  return Boolean(data);
+}
+
+export async function adminUpdateServicio(
+  supabase: SupabaseClient,
+  params: {
+    id: string;
+    password: string;
+    nombre: string;
+    duracion_min: number;
+    precio: number;
+    descripcion: string;
+  }
+) {
+  const { error } = await supabase.rpc("admin_update_servicio", {
+    p_id: params.id,
+    p_password: params.password,
+    p_nombre: params.nombre,
+    p_duracion_min: params.duracion_min,
+    p_precio: params.precio,
+    p_descripcion: params.descripcion,
+  });
+  return { error };
 }
