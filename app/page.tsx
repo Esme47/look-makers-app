@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { EYE_PORTADA_DATA_URI, LOGO_DATA_URI } from "@/lib/brandImages";
+import { EYE_PORTADA_DATA_URI } from "@/lib/brandImages";
 
 export default function Home() {
   return (
@@ -10,16 +10,10 @@ export default function Home() {
         alt="Look Makers"
         className="absolute inset-0 w-full h-full object-cover"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/10" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 from-5% via-black/35 via-55% to-transparent" />
 
       <div className="relative z-10 flex-1 flex flex-col items-center justify-end px-8 pb-16 text-center">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={LOGO_DATA_URI}
-          alt="Look Makers"
-          className="w-24 h-24 mb-3"
-        />
-        <p className="font-voice text-3xl text-lmGold mb-1">Look Makers</p>
+        <p className="font-voice text-4xl text-lmGold mb-1">Look Makers</p>
         <p className="text-[11px] tracking-[0.3em] text-lmGold/80 mb-8">
           LOOK MAKERS
         </p>
