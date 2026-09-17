@@ -1,61 +1,40 @@
 import Link from "next/link";
-import { EYE_DATA_URI, LASHISTA_DATA_URI, LOGO_DATA_URI } from "@/lib/brandImages";
+import { EYE_PORTADA_DATA_URI, LOGO_DATA_URI } from "@/lib/brandImages";
 
 export default function Home() {
   return (
-    <div>
-      <div className="relative rounded-2xl overflow-hidden mb-8">
+    <div className="-mx-4 -mt-6 relative min-h-[calc(100dvh-5rem)] w-[calc(100%+2rem)] overflow-hidden flex flex-col">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={EYE_PORTADA_DATA_URI}
+        alt="Look Makers"
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/10" />
+
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-end px-8 pb-16 text-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={EYE_DATA_URI}
-          alt="Look Makers, tu mirada, nuestra pasión"
-          className="w-full h-44 object-cover"
+          src={LOGO_DATA_URI}
+          alt="Look Makers"
+          className="w-24 h-24 mb-3"
         />
-        {/* Logo grande y con fondo propio para que se vea bien sobre cualquier foto */}
-        <div className="absolute -bottom-6 left-4 w-16 h-16 rounded-full bg-white shadow flex items-center justify-center p-1.5">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={LOGO_DATA_URI}
-            alt="Look Makers"
-            className="w-full h-full object-contain"
-          />
-        </div>
-        <div className="absolute -bottom-6 right-4 w-20 h-20 rounded-full border-2 border-white overflow-hidden shadow">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={LASHISTA_DATA_URI}
-            alt="Tu lashista en Look Makers"
-            className="w-full h-full object-cover"
-          />
-        </div>
-      </div>
-
-      <p className="font-voice text-xl mb-1 mt-8">Hola</p>
-      <p className="text-sm text-lmMuted mb-4">
-        Bienvenida de nuevo a Look Makers
-      </p>
-
-      <div className="lm-card mb-3">
-        <p className="text-sm font-medium mb-3">
-          Agenda tu cita de pestañas o cejas en segundos
+        <p className="font-voice text-3xl text-lmGold mb-1">Look Makers</p>
+        <p className="text-[11px] tracking-[0.3em] text-lmGold/80 mb-8">
+          LOOK MAKERS
         </p>
-        <Link href="/servicios" className="lm-btn block">
-          Agendar cita
+
+        <p className="font-voice text-2xl text-white mb-2">Realza tu mirada</p>
+        <p className="text-sm text-white/80 mb-8 max-w-[260px]">
+          Agenda tu cita y luce la belleza de cada detalle
+        </p>
+
+        <Link
+          href="/servicios"
+          className="inline-flex items-center gap-2 bg-lmPink text-[#5a3a3f] font-medium px-8 py-3 rounded-full"
+        >
+          Comenzar <span aria-hidden="true">→</span>
         </Link>
-      </div>
-
-      <div className="rounded-2xl bg-lmPink p-4 mb-4">
-        <p className="text-xs text-[#7a4f57] mb-1">Promo del mes</p>
-        <p className="text-sm font-medium">
-          Volumen ruso + diseño de cejas, 15% off
-        </p>
-      </div>
-
-      <p className="text-xs text-lmMuted mb-2">Resultados recientes</p>
-      <div className="grid grid-cols-3 gap-2">
-        <div className="aspect-square rounded-xl bg-[#e9ddd0]" />
-        <div className="aspect-square rounded-xl bg-[#ecd9d9]" />
-        <div className="aspect-square rounded-xl bg-[#e9ddd0]" />
       </div>
     </div>
   );
