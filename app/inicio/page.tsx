@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getServicios } from "@/lib/queries";
 import { getServicioImagen } from "@/lib/servicioImagen";
 import { EYE_DATA_URI } from "@/lib/brandImages";
+import { formatCOP } from "@/lib/mockData";
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +26,7 @@ export default async function Inicio() {
           className="w-10 h-10 rounded-full bg-lmPink/60 flex items-center justify-center text-lmGold shrink-0"
           aria-label="Perfil"
         >
-          <span aria-hidden="true">👤</span>
+          <i className="ti ti-user" aria-hidden="true">👤</i>
         </Link>
       </div>
 
