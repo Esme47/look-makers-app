@@ -24,7 +24,7 @@ export default function Home() {
         </p>
 
         <Link
-          href="/servicios"
+          href="/inicio"
           className="inline-flex items-center gap-2 bg-lmPink text-[#5a3a3f] font-medium px-8 py-3 rounded-full"
         >
           Comenzar <span aria-hidden="true">→</span>

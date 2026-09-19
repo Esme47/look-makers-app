@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getServicio } from "@/lib/queries";
 import { formatCOP } from "@/lib/mockData";
-import { EYE_DATA_URI } from "@/lib/brandImages";
+import { getServicioImagen } from "@/lib/servicioImagen";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +26,7 @@ export default async function ServicioDetalle({
       <div className="rounded-2xl overflow-hidden mb-4">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={EYE_DATA_URI}
+          src={getServicioImagen(servicio.nombre)}
           alt={servicio.nombre}
           className="w-full aspect-video object-cover"
         />
