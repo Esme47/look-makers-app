@@ -175,3 +175,78 @@ export async function adminUpdateServicio(
   });
   return { error };
 }
+
+export type CitaAdmin = {
+  id: string;
+  fecha: string;
+  hora_inicio: string;
+  estado: string;
+  pagada: boolean;
+  cliente_nombre: string | null;
+  cliente_telefono: string | null;
+  cliente_correo: string | null;
+  servicio_nombre: string;
+  precio: number;
+  duracion_min: number;
+};
+
+export async function adminListarCitas(supabase: SupabaseClient, password: string) {
+  const { data, error } = await supabase.rpc("admin_listar_citas", {
+    p_password: password,
+  });
+  if (error) return null;
+  return data as CitaAdmin[];
+}
+
+export async function adminActualizarCita(
+  supabase: SupabaseClient,
+  params: { id: string; password: string; estado?: string; pagada?: boolean }
+) {
+  const { error } = await supabase.rpc("admin_actualizar_cita", {
+    p_id: params.id,
+    p_password: params.password,
+    p_estado: params.estado ?? null,
+    p_pagada: params.pagada ?? null,
+  });
+  return { error };
+}
+
+export async function adminEliminarCita(
+  supabase: SupabaseClient,
+  params: { id: string; password: string }
+) {
+  const { error } = await supabase.rpc("admin_eliminar_cita", {
+    p_id: params.id,
+    p_password: params.password,
+  });
+  return { error };
+}
+
+export type ClienteAdmin = {
+  id: string;
+  nombre: string;
+  telefono: string;
+  correo: string | null;
+  creado_en: string;
+};
+
+export async function adminListarClientes(supabase: SupabaseClient, password: string) {
+  const { data, error } = await supabase.rpc("admin_listar_clientes", {
+    p_password: password,
+  });
+  if (error) return null;
+  return data as ClienteAdmin[];
+}
+
+export async function adminCrearCliente(
+  supabase: SupabaseClient,
+  params: { password: string; nombre: string; telefono: string; correo: string }
+) {
+  const { error } = await supabase.rpc("admin_crear_cliente", {
+    p_password: params.password,
+    p_nombre: params.nombre,
+    p_telefono: params.telefono,
+    p_correo: params.correo,
+  });
+  return { error };
+}

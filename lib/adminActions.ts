@@ -3,7 +3,13 @@
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { adminVerifyPassword, adminUpdateServicio } from "@/lib/queries";
+import {
+  adminVerifyPassword,
+  adminUpdateServicio,
+  adminActualizarCita,
+  adminEliminarCita,
+  adminCrearCliente,
+} from "@/lib/queries";
 
 const COOKIE_NAME = "lm_admin_pw";
 // 12 horas
@@ -61,5 +67,64 @@ export async function updateServicioAction(_prevState: unknown, formData: FormDa
 
   revalidatePath("/perfil");
   revalidatePath("/servicios");
+  return { error: null, ok: true };
+}
+
+export async function confirmarCitaAction(_prevState: unknown, formData: FormData) {
+  const password = cookies().get(COOKIE_NAME)?.value;
+  if (!password) return { error: "Tu sesión expiró, ingresa la clave de nuevo." };
+  const id = String(formData.get("id") ?? "");
+
+  const supabase = createClient();
+  const { error } = await adminActualizarCita(supabase, { id, password, estado: "confirmada" });
+  if (error) return { error: "No se pudo confirmar la cita." };
+
+  revalidatePath("/perfil");
+  return { error: null };
+}
+
+export async function marcarPagadaAction(_prevState: unknown, formData: FormData) {
+  const password = cookies().get(COOKIE_NAME)?.value;
+  if (!password) return { error: "Tu sesión expiró, ingresa la clave de nuevo." };
+  const id = String(formData.get("id") ?? "");
+
+  const supabase = createClient();
+  const { error } = await adminActualizarCita(supabase, { id, password, pagada: true });
+  if (error) return { error: "No se pudo marcar como pagada." };
+
+  revalidatePath("/perfil");
+  return { error: null };
+}
+
+export async function eliminarCitaAction(_prevState: unknown, formData: FormData) {
+  const password = cookies().get(COOKIE_NAME)?.value;
+  if (!password) return { error: "Tu sesión expiró, ingresa la clave de nuevo." };
+  const id = String(formData.get("id") ?? "");
+
+  const supabase = createClient();
+  const { error } = await adminEliminarCita(supabase, { id, password });
+  if (error) return { error: "No se pudo eliminar la cita." };
+
+  revalidatePath("/perfil");
+  return { error: null };
+}
+
+export async function crearClienteAction(_prevState: unknown, formData: FormData) {
+  const password = cookies().get(COOKIE_NAME)?.value;
+  if (!password) return { error: "Tu sesión expiró, ingresa la clave de nuevo." };
+
+  const nombre = String(formData.get("nombre") ?? "").trim();
+  const telefono = String(formData.get("telefono") ?? "").trim();
+  const correo = String(formData.get("correo") ?? "").trim();
+
+  if (!nombre || !telefono) {
+    return { error: "Escribe al menos el nombre y el teléfono." };
+  }
+
+  const supabase = createClient();
+  const { error } = await adminCrearCliente(supabase, { password, nombre, telefono, correo });
+  if (error) return { error: "No se pudo guardar el cliente." };
+
+  revalidatePath("/perfil");
   return { error: null, ok: true };
 }

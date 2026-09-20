@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormState, useFormStatus } from "react-dom";
-import { updateServicioAction, logoutAdmin } from "@/lib/adminActions";
+import { updateServicioAction } from "@/lib/adminActions";
 import type { Servicio } from "@/lib/queries";
 
 function BotonGuardar() {
@@ -74,14 +74,6 @@ export default function AdminServiciosEditor({
 }) {
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
-        <p className="font-voice text-lg">Servicios</p>
-        <form action={logoutAdmin}>
-          <button className="text-xs text-lmMuted underline">
-            Cerrar sesión
-          </button>
-        </form>
-      </div>
       {servicios.map((s) => (
         <FilaServicio key={s.id} servicio={s} />
       ))}
