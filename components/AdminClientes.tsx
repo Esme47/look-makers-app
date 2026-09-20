@@ -14,7 +14,10 @@ function BotonGuardar() {
 }
 
 export default function AdminClientes({ clientes }: { clientes: ClienteAdmin[] }) {
-  const [state, formAction] = useFormState(crearClienteAction, { error: null });
+  const [state, formAction] = useFormState(crearClienteAction, {
+    error: null,
+    ok: false,
+  });
 
   return (
     <div>
