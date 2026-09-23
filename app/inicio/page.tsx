@@ -4,10 +4,9 @@ import { getServicios } from "@/lib/queries";
 import { getServicioImagen } from "@/lib/servicioImagen";
 import { EYE_DATA_URI } from "@/lib/brandImages";
 import { formatCOP } from "@/lib/mockData";
+import { LASHISTA_WHATSAPP } from "@/lib/contacto";
 
 export const dynamic = "force-dynamic";
-
-const WHATSAPP_NUMERO = "573000000000"; // reemplaza por el número real de Look Makers
 
 export default async function Inicio() {
   const supabase = createClient();
@@ -73,7 +72,7 @@ export default async function Inicio() {
           </span>
         </Link>
         <a
-          href={`https://wa.me/${WHATSAPP_NUMERO}`}
+          href={`https://wa.me/${LASHISTA_WHATSAPP}`}
           target="_blank"
           rel="noopener noreferrer"
           className="flex flex-col items-center gap-1.5"
