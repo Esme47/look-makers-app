@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { logoutAdmin } from "@/lib/adminActions";
-import type { Servicio, CitaAdmin, ClienteAdmin } from "@/lib/queries";
+import type { Servicio, CitaAdmin, ClienteAdmin, GastoAdmin } from "@/lib/queries";
 import AdminServiciosEditor from "@/components/AdminServiciosEditor";
 import AdminCitas from "@/components/AdminCitas";
 import AdminClientes from "@/components/AdminClientes";
@@ -21,10 +21,12 @@ export default function AdminDashboard({
   servicios,
   citas,
   clientes,
+  gastos,
 }: {
   servicios: Servicio[];
   citas: CitaAdmin[];
   clientes: ClienteAdmin[];
+  gastos: GastoAdmin[];
 }) {
   const [tab, setTab] = useState<Tab>("citas");
 
@@ -52,7 +54,7 @@ export default function AdminDashboard({
       {tab === "citas" && <AdminCitas citas={citas} />}
       {tab === "servicios" && <AdminServiciosEditor servicios={servicios} />}
       {tab === "clientes" && <AdminClientes clientes={clientes} />}
-      {tab === "cartera" && <AdminCartera citas={citas} />}
+      {tab === "cartera" && <AdminCartera citas={citas} gastos={gastos} />}
     </div>
   );
 }

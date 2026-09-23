@@ -1,6 +1,11 @@
 import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
-import { getServicios, adminListarCitas, adminListarClientes } from "@/lib/queries";
+import {
+  getServicios,
+  adminListarCitas,
+  adminListarClientes,
+  adminListarGastos,
+} from "@/lib/queries";
 import AdminLogin from "@/components/AdminLogin";
 import AdminDashboard from "@/components/AdminDashboard";
 
@@ -14,17 +19,18 @@ export default async function Perfil() {
   }
 
   const supabase = createClient();
-  const [servicios, citas, clientes] = await Promise.all([
+  const [servicios, citas, clientes, gastos] = await Promise.all([
     getServicios(supabase),
     adminListarCitas(supabase, passwordCookie),
     adminListarClientes(supabase, passwordCookie),
+    adminListarGastos(supabase, passwordCookie),
   ]);
 
-  if (citas === null || clientes === null) {
+  if (citas === null || clientes === null || gastos === null) {
     return <AdminLogin />;
   }
 
   return (
-    <AdminDashboard servicios={servicios} citas={citas} clientes={clientes} />
+    <AdminDashboard servicios={servicios} citas={citas} clientes={clientes} gastos={gastos} />
   );
 }

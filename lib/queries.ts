@@ -250,3 +250,43 @@ export async function adminCrearCliente(
   });
   return { error };
 }
+
+export type GastoAdmin = {
+  id: string;
+  concepto: string;
+  monto: number;
+  fecha: string;
+  creado_en: string;
+};
+
+export async function adminListarGastos(supabase: SupabaseClient, password: string) {
+  const { data, error } = await supabase.rpc("admin_listar_gastos", {
+    p_password: password,
+  });
+  if (error) return null;
+  return data as GastoAdmin[];
+}
+
+export async function adminCrearGasto(
+  supabase: SupabaseClient,
+  params: { password: string; concepto: string; monto: number; fecha: string }
+) {
+  const { error } = await supabase.rpc("admin_crear_gasto", {
+    p_password: params.password,
+    p_concepto: params.concepto,
+    p_monto: params.monto,
+    p_fecha: params.fecha,
+  });
+  return { error };
+}
+
+export async function adminEliminarGasto(
+  supabase: SupabaseClient,
+  params: { id: string; password: string }
+) {
+  const { error } = await supabase.rpc("admin_eliminar_gasto", {
+    p_id: params.id,
+    p_password: params.password,
+  });
+  return { error };
+}

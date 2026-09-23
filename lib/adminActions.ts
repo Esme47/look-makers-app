@@ -9,6 +9,8 @@ import {
   adminActualizarCita,
   adminEliminarCita,
   adminCrearCliente,
+  adminCrearGasto,
+  adminEliminarGasto,
 } from "@/lib/queries";
 
 const COOKIE_NAME = "lm_admin_pw";
@@ -127,4 +129,42 @@ export async function crearClienteAction(_prevState: unknown, formData: FormData
 
   revalidatePath("/perfil");
   return { error: null, ok: true };
+}
+
+export async function crearGastoAction(_prevState: unknown, formData: FormData) {
+  const password = cookies().get(COOKIE_NAME)?.value;
+  if (!password) return { error: "Tu sesión expiró, ingresa la clave de nuevo." };
+
+  const concepto = String(formData.get("concepto") ?? "").trim();
+  const monto = Number(formData.get("monto"));
+  const fecha = String(formData.get("fecha") ?? "").trim();
+
+  if (!concepto || !monto || monto <= 0) {
+    return { error: "Escribe el concepto y un monto válido." };
+  }
+
+  const supabase = createClient();
+  const { error } = await adminCrearGasto(supabase, {
+    password,
+    concepto,
+    monto,
+    fecha: fecha || new Date().toISOString().slice(0, 10),
+  });
+  if (error) return { error: "No se pudo guardar el gasto." };
+
+  revalidatePath("/perfil");
+  return { error: null, ok: true };
+}
+
+export async function eliminarGastoAction(_prevState: unknown, formData: FormData) {
+  const password = cookies().get(COOKIE_NAME)?.value;
+  if (!password) return { error: "Tu sesión expiró, ingresa la clave de nuevo." };
+  const id = String(formData.get("id") ?? "");
+
+  const supabase = createClient();
+  const { error } = await adminEliminarGasto(supabase, { id, password });
+  if (error) return { error: "No se pudo eliminar el gasto." };
+
+  revalidatePath("/perfil");
+  return { error: null };
 }
