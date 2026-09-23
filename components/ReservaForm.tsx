@@ -153,7 +153,7 @@ export default function ReservaForm({
     )}&details=${encodeURIComponent("Cita en Look Makers")}`;
 
     const mensajeWhatsapp =
-      `Hola Nini! Soy ${nombre.trim()} y acabo de agendar una cita en Look Makers.\n` +
+      `Hola Paola! Soy ${nombre.trim()} y acabo de agendar una cita en Look Makers.\n` +
       `Servicio: ${servicio.nombre}\n` +
       `Fecha: ${fechaLarga}\n` +
       `Hora: ${formatoHora12(horaSel)}\n` +
