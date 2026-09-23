@@ -48,6 +48,11 @@ function sumarMinutos(hora: string, minutos: number) {
   return `${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
 }
 
+function aMinutos(hora: string) {
+  const [h, m] = hora.slice(0, 5).split(":").map(Number);
+  return h * 60 + m;
+}
+
 function generarFranjas(horaInicio: string, horaFin: string, duracionMin: number) {
   const franjas: string[] = [];
   let actual = horaInicio.slice(0, 5);
@@ -62,6 +67,9 @@ function generarFranjas(horaInicio: string, horaFin: string, duracionMin: number
 
 // Calcula las horas libres de un profesional para una fecha y un servicio,
 // cruzando su horario habitual (disponibilidad) con las citas ya reservadas.
+// Una franja se descarta si se cruza en cualquier punto con una cita ya
+// existente ese día (sin importar si esa cita es de un servicio con otra
+// duración), no solo si coincide exactamente con la hora de inicio.
 export async function getHorasDisponibles(
   supabase: SupabaseClient,
   profesionalId: string,
@@ -81,20 +89,27 @@ export async function getHorasDisponibles(
 
   const { data: ocupadas, error: errOcupadas } = await supabase
     .from("horarios_ocupados")
-    .select("hora_inicio")
+    .select("hora_inicio, hora_fin")
     .eq("profesional_id", profesionalId)
     .eq("fecha", fechaISO);
   if (errOcupadas) throw errOcupadas;
 
-  const horasOcupadas = new Set(
-    (ocupadas ?? []).map((c) => c.hora_inicio.slice(0, 5))
-  );
+  const rangosOcupados = (ocupadas ?? []).map((o) => ({
+    inicio: aMinutos(o.hora_inicio),
+    fin: aMinutos(o.hora_fin),
+  }));
+
+  function seCruzaConOcupado(horaInicio: string) {
+    const inicio = aMinutos(horaInicio);
+    const fin = inicio + duracionMin;
+    return rangosOcupados.some((o) => inicio < o.fin && fin > o.inicio);
+  }
 
   const todasLasFranjas = rangos.flatMap((r) =>
     generarFranjas(r.hora_inicio, r.hora_fin, duracionMin)
   );
 
-  return todasLasFranjas.filter((h) => !horasOcupadas.has(h));
+  return todasLasFranjas.filter((h) => !seCruzaConOcupado(h));
 }
 
 // Crea una cita de invitada: no requiere cuenta, solo sus datos de contacto.
