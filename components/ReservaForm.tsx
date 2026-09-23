@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { getHorasDisponibles, crearCita } from "@/lib/queries";
 import type { Servicio } from "@/lib/queries";
 import { getServicioImagen } from "@/lib/servicioImagen";
+import { LASHISTA_WHATSAPP } from "@/lib/contacto";
 
 type Profesional = { id: string; nombre: string };
 
@@ -151,6 +152,14 @@ export default function ReservaForm({
       "Montería, Córdoba"
     )}&details=${encodeURIComponent("Cita en Look Makers")}`;
 
+    const mensajeWhatsapp =
+      `Hola Nini! Soy ${nombre.trim()} y acabo de agendar una cita en Look Makers.\n` +
+      `Servicio: ${servicio.nombre}\n` +
+      `Fecha: ${fechaLarga}\n` +
+      `Hora: ${formatoHora12(horaSel)}\n` +
+      `Mi teléfono: ${telefono.trim()}`;
+    const whatsappUrl = `https://wa.me/${LASHISTA_WHATSAPP}?text=${encodeURIComponent(mensajeWhatsapp)}`;
+
     return (
       <div className="text-center pt-4">
         <p className="font-voice text-3xl text-lmGold mb-4">M</p>
@@ -180,10 +189,18 @@ export default function ReservaForm({
         </div>
 
         <a
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="lm-btn block mb-3 !bg-[#25D366] border-none"
+        >
+          💬 Avisar por WhatsApp
+        </a>
+        <a
           href={gcalUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="lm-btn block mb-3"
+          className="block w-full py-3 rounded-full border border-lmGold text-lmGold font-medium mb-3"
         >
           📅 Ver en calendario
         </a>
