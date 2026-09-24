@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getServicios } from "@/lib/queries";
 import { getServicioImagen } from "@/lib/servicioImagen";
-import { EYE_DATA_URI } from "@/lib/brandImages";
+import { BANNER_AGENDA_DATA_URI } from "@/lib/bannerAgenda";
 import { formatCOP } from "@/lib/mockData";
 import { LASHISTA_WHATSAPP } from "@/lib/contacto";
 
@@ -35,7 +35,7 @@ export default async function Inicio() {
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={EYE_DATA_URI}
+          src={BANNER_AGENDA_DATA_URI}
           alt="Agenda tu cita"
           className="absolute inset-0 w-full h-full object-cover"
         />
