@@ -2,14 +2,20 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
 import RegistrarServiceWorker from "@/components/RegistrarServiceWorker";
-import { ICON_192_DATA_URI, ICON_512_DATA_URI, APPLE_TOUCH_ICON_DATA_URI } from "@/lib/pwaIcons";
+import {
+  ICON_192_DATA_URI,
+  ICON_512_DATA_URI,
+  APPLE_TOUCH_ICON_DATA_URI,
+  FAVICON_DATA_URI,
+} from "@/lib/pwaIcons";
 
 export const metadata: Metadata = {
   title: "Look Makers",
-  description: "Agenda tu cita de pestañas y cejas en Montería",
+  description: "Agenda tu cita de pesta\u00f1as y cejas en Monter\u00eda",
   manifest: "/manifest.json",
   icons: {
     icon: [
+      { url: FAVICON_DATA_URI, sizes: "48x48", type: "image/png" },
       { url: ICON_192_DATA_URI, sizes: "192x192", type: "image/webp" },
       { url: ICON_512_DATA_URI, sizes: "512x512", type: "image/webp" },
     ],
