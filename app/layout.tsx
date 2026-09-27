@@ -2,12 +2,6 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
 import RegistrarServiceWorker from "@/components/RegistrarServiceWorker";
-import {
-  ICON_192_DATA_URI,
-  ICON_512_DATA_URI,
-  APPLE_TOUCH_ICON_DATA_URI,
-  FAVICON_DATA_URI,
-} from "@/lib/pwaIcons";
 
 export const metadata: Metadata = {
   title: "Look Makers",
@@ -15,11 +9,11 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
   icons: {
     icon: [
-      { url: FAVICON_DATA_URI, sizes: "48x48", type: "image/png" },
-      { url: ICON_192_DATA_URI, sizes: "192x192", type: "image/webp" },
-      { url: ICON_512_DATA_URI, sizes: "512x512", type: "image/webp" },
+      { url: "/favicon-48.png", sizes: "48x48", type: "image/png" },
+      { url: "/icon-192.webp", sizes: "192x192", type: "image/webp" },
+      { url: "/icon-512.webp", sizes: "512x512", type: "image/webp" },
     ],
-    apple: APPLE_TOUCH_ICON_DATA_URI,
+    apple: "/apple-touch-icon.png",
   },
   appleWebApp: {
     capable: true,
