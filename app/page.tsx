@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { EYE_PORTADA_DATA_URI } from "@/lib/brandImages";
+import { EYE_PORTADA_DATA_URI } from "@/lib/portadaBg";
 
 export default function Home() {
   return (
