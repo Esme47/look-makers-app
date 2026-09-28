@@ -1,24 +1,24 @@
 import Link from "next/link";
-import { EYE_PORTADA_DATA_URI } from "@/lib/portadaBg";
-import { LOGO_DATA_URI } from "@/lib/brandImages";
+import { PORTADA_BG_URI } from "@/lib/portadaFondo";
+import { PORTADA_LOGO_URI } from "@/lib/portadaLogo";
 
 export default function Home() {
   return (
     <div className="-mx-4 -mt-6 relative min-h-[calc(100dvh-5rem)] w-[calc(100%+2rem)] overflow-hidden flex flex-col bg-[#2b1a14]">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={EYE_PORTADA_DATA_URI}
-        alt="Look Makers"
-        className="absolute inset-0 w-full h-full object-cover object-[62%_20%]"
+        src={PORTADA_BG_URI}
+        alt=""
+        className="absolute inset-x-0 top-0 w-full h-[64%] object-cover object-[60%_45%]"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#2b1a14] from-10% via-[#2b1a14]/70 via-45% to-transparent to-80%" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#2b1a14] from-30% via-[#2b1a14]/80 via-45% to-transparent to-75%" />
 
       <div className="relative z-10 flex-1 flex flex-col items-center justify-end px-8 pb-14 text-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={LOGO_DATA_URI}
+          src={PORTADA_LOGO_URI}
           alt="Look Makers"
-          className="w-28 h-28 object-contain mb-3"
+          className="w-32 h-32 object-contain mb-2"
         />
         <p className="font-voice text-4xl text-lmGold leading-none mb-2">
           Look Makers
