@@ -31,15 +31,15 @@ export default async function Inicio() {
 
       <Link
         href="/servicios"
-        className="relative block rounded-2xl overflow-hidden mb-5 h-40"
+        className="relative block rounded-2xl overflow-hidden mb-5 h-44"
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={BANNER_AGENDA_DATA_URI}
           alt="Agenda tu cita"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover object-[68%_25%]"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/25 to-transparent" />
         <div className="relative z-10 h-full flex flex-col justify-center px-5">
           <p className="font-voice text-white text-2xl leading-tight">
             Agenda
