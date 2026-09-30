@@ -78,6 +78,11 @@ export default function AdminCartera({
   const hoy = hoyISO();
   const mesActual = hoy.slice(0, 7); // YYYY-MM
 
+  // Una cita pagada cuenta de inmediato en el total, sin importar si su
+  // fecha cae en un mes distinto al actual (por ejemplo, una cita de
+  // octubre que ya se cobro en septiembre): asi el cobro nunca "desaparece".
+  const totalCobrado = pagadas.reduce((sum, c) => sum + Number(c.precio), 0);
+
   const totalHoy = pagadas
     .filter((c) => c.fecha === hoy)
     .reduce((sum, c) => sum + Number(c.precio), 0);
@@ -90,8 +95,15 @@ export default function AdminCartera({
 
   const utilidadMes = totalMes - totalGastosMes;
 
+  const pagadasOrdenadas = [...pagadas].sort((a, b) => (a.fecha < b.fecha ? 1 : -1));
+
   return (
     <div>
+      <div className="lm-card text-center mb-3">
+        <p className="text-xs text-lmMuted mb-1">Total cobrado (todas las citas pagadas)</p>
+        <p className="text-2xl font-medium text-lmGold">{formatCOP(totalCobrado)}</p>
+      </div>
+
       <div className="grid grid-cols-2 gap-3 mb-3">
         <div className="lm-card text-center">
           <p className="text-xs text-lmMuted mb-1">Hoy</p>
@@ -138,11 +150,11 @@ export default function AdminCartera({
         </div>
       )}
 
-      <p className="text-xs text-lmMuted mb-2">Citas pagadas este mes</p>
-      {delMes.length === 0 ? (
-        <p className="text-sm text-lmMuted">Aún no hay citas pagadas este mes.</p>
+      <p className="text-xs text-lmMuted mb-2">Citas pagadas</p>
+      {pagadasOrdenadas.length === 0 ? (
+        <p className="text-sm text-lmMuted">Aún no hay citas pagadas.</p>
       ) : (
-        delMes.map((c) => (
+        pagadasOrdenadas.map((c) => (
           <div key={c.id} className="lm-card mb-2 flex items-center justify-between">
             <div>
               <p className="text-sm font-medium">{c.cliente_nombre || "Sin nombre"}</p>
