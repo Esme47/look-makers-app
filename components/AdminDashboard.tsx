@@ -53,7 +53,7 @@ export default function AdminDashboard({
 
       {tab === "citas" && <AdminCitas citas={citas} />}
       {tab === "servicios" && <AdminServiciosEditor servicios={servicios} />}
-      {tab === "clientes" && <AdminClientes clientes={clientes} />}
+      {tab === "clientes" && <AdminClientes clientes={clientes} citas={citas} />}
       {tab === "cartera" && <AdminCartera citas={citas} gastos={gastos} />}
     </div>
   );
