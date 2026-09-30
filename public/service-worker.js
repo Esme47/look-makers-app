@@ -1,4 +1,4 @@
-const CACHE_NAME = "look-makers-v1";
+const CACHE_NAME = "look-makers-v2";
 
 self.addEventListener("install", () => {
   self.skipWaiting();
@@ -15,18 +15,30 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Estrategia simple: red primero (los datos de citas/servicios cambian todo
-// el tiempo), y si no hay conexión, cae a lo último que haya quedado en
-// caché de una visita anterior.
+// La navegacion (el HTML de cada pagina) NUNCA se sirve desde cache: asi la
+// app siempre muestra la version mas reciente (banner, imagenes, precios,
+// etc.) la primera vez que se entra a una seccion, no solo despues de volver
+// a entrar. Solo los recursos estaticos del propio sitio (JS, CSS, fuentes)
+// se cachean para que la app siga funcionando sin conexion.
 self.addEventListener("fetch", (event) => {
-  if (event.request.method !== "GET") return;
+  const req = event.request;
+  if (req.method !== "GET") return;
+
+  if (req.mode === "navigate" || req.destination === "document") {
+    event.respondWith(fetch(req).catch(() => caches.match(req)));
+    return;
+  }
+
+  const url = new URL(req.url);
+  if (url.origin !== self.location.origin) return; // no tocar Supabase ni otros orígenes
+
   event.respondWith(
-    fetch(event.request)
+    fetch(req)
       .then((respuesta) => {
         const copia = respuesta.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copia));
+        caches.open(CACHE_NAME).then((cache) => cache.put(req, copia));
         return respuesta;
       })
-      .catch(() => caches.match(event.request))
+      .catch(() => caches.match(req))
   );
 });
